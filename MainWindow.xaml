@@ -5,8 +5,69 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NumeralSystemConverter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Numeral System Converter"
+        Height="450" Width="700">
 
-    </Grid>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="MyBoolToVisibilityConverter" />
+    </Window.Resources>
+
+    <Border Padding="20">
+
+        <Grid FocusManager.FocusedElement="{Binding ElementName=upperNumberBox}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.7*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="0.7*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="2*" />
+            </Grid.RowDefinitions>
+
+            <!--Application name-->
+
+            <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="Numeral System Converter"
+                       VerticalAlignment="Center" HorizontalAlignment="Center"
+                       FontSize="38" FontFamily="Segoe UI Light" />
+
+            <!-- Upper number text box-->
+            <Grid Grid.Column="1" Grid.Row="1">
+                <TextBlock Text="Number you want to convert" Margin="10 25" Padding="5 7" FontSize="12" Foreground="Gray" IsHitTestVisible="False"
+                    Visibility="{Binding ElementName=upperNumberBox, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibilityConverter}}" />
+                <TextBox  Margin="10 25" Padding="2 7" FontSize="12" Name="upperNumberBox" Background="Transparent" />
+            </Grid>
+
+            <!-- Upper system text box-->
+            <Grid Grid.Column="2" Grid.Row="1">
+                <TextBlock Text="System" Margin="10 25" Padding="5 7" FontSize="12" Foreground="Gray" IsHitTestVisible="False"
+                    Visibility="{Binding ElementName=upperSystemBox, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibilityConverter}}" />
+                <TextBox  Margin="10 25" Padding="2 7" FontSize="12" Name="upperSystemBox" Background="Transparent" />
+            </Grid>
+
+            <!-- Lower number text box-->
+            <Grid Grid.Column="1" Grid.Row="2">
+                <TextBlock Text="Conversion result" Margin="10 25" Padding="5 7" FontSize="12" Foreground="DarkGray" IsHitTestVisible="False"
+                    Visibility="{Binding ElementName=lowerNumberBox, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibilityConverter}}" />
+                <TextBox  Margin="10 25" Padding="2 7" FontSize="12" Name="lowerNumberBox" Background="Transparent" IsReadOnly="true" />
+            </Grid>
+
+            <!-- Lower system text box-->
+            <Grid Grid.Column="2" Grid.Row="2">
+                <TextBlock Text="Target system" Margin="10 25" Padding="5 7" FontSize="12" Foreground="Gray" IsHitTestVisible="False"
+                    Visibility="{Binding ElementName=lowerSystemBox, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibilityConverter}}" />
+                <TextBox  Margin="10 25" Padding="2 7" FontSize="12" Name="lowerSystemBox" Background="Transparent" />
+            </Grid>
+
+            <!-- Hint how to convert -->
+            <TextBlock Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="3"
+                       Text="Press ENTER to convert" VerticalAlignment="Center"
+                       HorizontalAlignment="Center" FontSize="19" FontFamily="Segoe UI Light"
+                       Foreground="DarkGray" />
+        </Grid>
+    </Border>
 </Window>
