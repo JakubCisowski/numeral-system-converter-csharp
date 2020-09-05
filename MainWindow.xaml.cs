@@ -7,7 +7,6 @@ using System.Windows.Media;
 
 //todo (?)Change the border colour around focused textbox
 //todo Fractions support
-//todo Clicking result copies it to clickboard
 
 namespace NumeralSystemConverter
 {
@@ -159,6 +158,17 @@ namespace NumeralSystemConverter
             }
 
             return true;
+        }
+
+        // When result box clicked, copy value to clickboard and display info about it
+        private void lowerNumberBoxClicked(object sender, MouseButtonEventArgs e)
+        {
+            // Checks whether result is displayed
+            if (lowerNumberBox.Text != "")
+            {
+                this.displayInfo("Result copied to clipboard");
+                Clipboard.SetText(lowerNumberBox.Text);
+            }
         }
     }
 }

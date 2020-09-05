@@ -53,7 +53,7 @@
             <Grid Grid.Column="1" Grid.Row="2">
                 <TextBlock Text="Conversion result" Margin="10 25" Padding="5 7" FontSize="12" Foreground="DarkGray" IsHitTestVisible="False"
                     Visibility="{Binding ElementName=lowerNumberBox, Path=Text.IsEmpty, Converter={StaticResource MyBoolToVisibilityConverter}}" />
-                <TextBox  Margin="10 25" Padding="2 7" FontSize="12" Name="lowerNumberBox" Background="Transparent" IsReadOnly="true" />
+                <TextBox  Margin="10 25" Padding="2 7" FontSize="12" Name="lowerNumberBox" Background="Transparent" IsReadOnly="true" PreviewMouseDown="lowerNumberBoxClicked" />
             </Grid>
 
             <!-- Lower system text box-->
