@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 
 //todo (?)Change the border colour around focused textbox
-//todo Fractions support
+//todo Change top-right icon
 
 namespace NumeralSystemConverter
 {
@@ -34,6 +34,9 @@ namespace NumeralSystemConverter
             {
                 // Reset result box
                 lowerNumberBox.Text = "";
+
+                // Replace comma with dot
+                upperNumberBox.Text = upperNumberBox.Text.Replace('.', ',');
 
                 // Checks if input(numeral systems and original number) are valid
                 if (!checkInput(upperNumberBox.Text, upperSystemBox.Text, lowerSystemBox.Text))
@@ -106,6 +109,23 @@ namespace NumeralSystemConverter
         // Checks if input (numeral systems and original number) are valid
         public bool checkInput(string originalVal, string originalSys, string targetSys)
         {
+            // Check if every value is filled
+            if (originalVal == "")
+            {
+                this.displayInfo("Input the number you want to convert", true);
+                return false;
+            }
+            if (originalSys == "")
+            {
+                this.displayInfo("Input numeral system of the original number", true);
+                return false;
+            }
+            if (targetSys == "")
+            {
+                this.displayInfo("Input numeral system you want to convert the number to", true);
+                return false;
+            }
+
             // Check both original and target numreal systems
             int originalSystem, targetSystem;
             bool isNumeric = int.TryParse(originalSys, out originalSystem);
@@ -124,6 +144,8 @@ namespace NumeralSystemConverter
             }
 
             // Check if number is in original numeral system
+            bool dotAlready = false;
+
             for (int i = 0; i < originalVal.Length; i++)
             {
                 bool valid = true;
@@ -144,6 +166,21 @@ namespace NumeralSystemConverter
                 {
                     valid = false;
                 }
+                // In case of comma or dot
+                else if (asciiCode == 44 || asciiCode == 46)
+                {
+                    if (i == 0)
+                    {
+                        this.displayInfo("Comma/dot can't be inserted at the beginning of a number", true);
+                        return false;
+                    }
+                    else if (dotAlready)
+                    {
+                        this.displayInfo("Comma/dot can't be inserted twice", true);
+                        return false;
+                    }
+                    dotAlready = true;
+                }
                 // In case of other character
                 else if (asciiCode < 48 || (asciiCode > 57 && asciiCode < 65) || (asciiCode > 90 && asciiCode < 97) || asciiCode > 122)
                 {
@@ -152,7 +189,7 @@ namespace NumeralSystemConverter
 
                 if (!valid)
                 {
-                    this.displayInfo("This number is not in given numeral system", true);
+                    this.displayInfo("This number is not valid in given numeral system", true);
                     return false;
                 }
             }
