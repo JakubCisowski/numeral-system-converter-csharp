@@ -1,7 +1,13 @@
-﻿using System.Windows;
+﻿using System;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
-//todo Graphics - maybe change the border colour around focused textbox
-//todo Functionality - create conversion system
+//todo (?)Change the border colour around focused textbox
+//todo Fractions support
+//todo Clicking result copies it to clickboard
 
 namespace NumeralSystemConverter
 {
@@ -13,7 +19,146 @@ namespace NumeralSystemConverter
         public MainWindow()
         {
             InitializeComponent();
+
+            // Makes window unable to resize
             this.ResizeMode = ResizeMode.NoResize;
+
+            // Listens for key pressed, for ENTER support
+            this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
+        }
+
+        // Checks if ENTER was pressed and tries to convert entered number
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            // When ENTER pressed
+            if (e.Key == Key.Enter)
+            {
+                // Reset result box
+                lowerNumberBox.Text = "";
+
+                // Checks if input(numeral systems and original number) are valid
+                if (!checkInput(upperNumberBox.Text, upperSystemBox.Text, lowerSystemBox.Text))
+                {
+                    return;
+                }
+
+                // Converts after making sure values are correct
+                string conversionResult = Number.Convert(new Number(upperNumberBox.Text, Int32.Parse(upperSystemBox.Text)), Int32.Parse(lowerSystemBox.Text));
+
+                // Displays result in proper text box
+                lowerNumberBox.Text = conversionResult;
+
+                displayInfo("Conversion successful");
+            }
+        }
+
+        // Displays info e.g. about errors
+        public async void displayInfo(string info, bool error = false)
+        {
+            // Makes sure another animation isn't in progress
+            if (infoBox.Text != "Press ENTER to convert")
+            {
+                return;
+            }
+
+            int fadeSpeed = 20; // Time in ms between phases
+            int infoDisplayTime = 2500; // Time in ms, how long will info be dispolayed
+
+            // Handmade animation of fade in and out
+
+            for (int i = 0; i < 10; i++)
+            {
+                infoBox.Opacity -= 0.1;
+                await Task.Delay(fadeSpeed);
+            }
+
+            // Change info color to orange if it's an error
+            if (error)
+            {
+                infoBox.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(233, 132, 0));
+            }
+            infoBox.Text = info;
+
+            for (int i = 0; i < 10; i++)
+            {
+                infoBox.Opacity += 0.1;
+                await Task.Delay(fadeSpeed);
+            }
+
+            await Task.Delay(infoDisplayTime);
+
+            for (int i = 0; i < 10; i++)
+            {
+                infoBox.Opacity -= 0.1;
+                await Task.Delay(fadeSpeed);
+            }
+
+            // Switching back to original values
+            infoBox.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromRgb(169, 169, 169));
+            infoBox.Text = "Press ENTER to convert";
+
+            for (int i = 0; i < 10; i++)
+            {
+                infoBox.Opacity += 0.1;
+                await Task.Delay(fadeSpeed);
+            }
+        }
+
+        // Checks if input (numeral systems and original number) are valid
+        public bool checkInput(string originalVal, string originalSys, string targetSys)
+        {
+            // Check both original and target numreal systems
+            int originalSystem, targetSystem;
+            bool isNumeric = int.TryParse(originalSys, out originalSystem);
+            bool isNumeric2 = int.TryParse(targetSys, out targetSystem);
+
+            if (!isNumeric || !isNumeric2)
+            {
+                this.displayInfo("Invalid characters in numeral system", true);
+                return false;
+            }
+
+            if (!((originalSystem >= 2 && originalSystem <= 36) && (targetSystem >= 2 && targetSystem <= 36)))
+            {
+                this.displayInfo("Numeral systems available: 2 - 36", true);
+                return false;
+            }
+
+            // Check if number is in original numeral system
+            for (int i = 0; i < originalVal.Length; i++)
+            {
+                bool valid = true;
+                byte asciiCode = Encoding.Default.GetBytes(originalVal)[i];
+
+                // In case of number
+                if (asciiCode >= 48 && asciiCode <= 57 && originalSystem <= asciiCode - 48)
+                {
+                    valid = false;
+                }
+                // In case of upper case letter
+                else if (asciiCode >= 65 && asciiCode <= 90 && originalSystem <= asciiCode - 55)
+                {
+                    valid = false;
+                }
+                // In case of lower case letter
+                else if (asciiCode >= 97 && asciiCode <= 122 && originalSystem <= asciiCode - 87)
+                {
+                    valid = false;
+                }
+                // In case of other character
+                else if (asciiCode < 48 || (asciiCode > 57 && asciiCode < 65) || (asciiCode > 90 && asciiCode < 97) || asciiCode > 122)
+                {
+                    valid = false;
+                }
+
+                if (!valid)
+                {
+                    this.displayInfo("This number is not in given numeral system", true);
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
