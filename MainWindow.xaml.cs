@@ -35,8 +35,26 @@ namespace NumeralSystemConverter
                 // Reset result box
                 lowerNumberBox.Text = "";
 
-                // Replace comma with dot
+                // Replace comma with dot and slice zeros at the end
                 upperNumberBox.Text = upperNumberBox.Text.Replace('.', ',');
+                if (upperNumberBox.Text.Contains(','))
+                {
+                    upperNumberBox.Text = upperNumberBox.Text.TrimEnd('0');
+                    // If comma at the end, delete it
+                    if (upperNumberBox.Text[upperNumberBox.Text.Length - 1] == ',')
+                    {
+                        upperNumberBox.Text = upperNumberBox.Text.Substring(0, upperNumberBox.Text.Length - 1);
+                    }
+                }
+
+                // Slice out zeros at the beginning of inputs (but it can be fraction 0,5 etc.)
+                upperSystemBox.Text = upperSystemBox.Text.TrimStart('0');
+                lowerSystemBox.Text = lowerSystemBox.Text.TrimStart('0');
+                upperNumberBox.Text = upperNumberBox.Text.TrimStart('0');
+                if (upperNumberBox.Text[0] == ',')
+                {
+                    upperNumberBox.Text = upperNumberBox.Text.Insert(0, "0");
+                }
 
                 // Checks if input(numeral systems and original number) are valid
                 if (!checkInput(upperNumberBox.Text, upperSystemBox.Text, lowerSystemBox.Text))
