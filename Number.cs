@@ -117,7 +117,7 @@ namespace NumeralSystemConverter
 
             while (valueInDecimalInt != 0)
             {
-                if (valueInDecimalInt % targetSys < 9)
+                if (valueInDecimalInt % targetSys <= 9)
                 {
                     targetValue = targetValue.Insert(0, (valueInDecimalInt % targetSys).ToString());
                 }
@@ -138,7 +138,7 @@ namespace NumeralSystemConverter
 
                 while (valueInFractionDecimal != 0)
                 {
-                    if (Math.Truncate(valueInFractionDecimal * targetSys) < 9)
+                    if (Math.Truncate(valueInFractionDecimal * targetSys) <= 9)
                     {
                         targetValue += (Math.Truncate(valueInFractionDecimal * targetSys)).ToString();
                     }
