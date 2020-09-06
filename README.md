@@ -11,4 +11,4 @@ Features:
 
 How it looks:
 
-![Gif expired](https://im6.ezgif.com/tmp/ezgif-6-8ac20bcae507.gif)
+![Gif expired](https://i.imgur.com/0GDE3m8.gif)
